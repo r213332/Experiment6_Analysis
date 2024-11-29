@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "github.copilot",
+    "github.copilot-chat",
+    "eamodio.gitlens",
+    "ms-ceintl.vscode-language-pack-ja",
+    "mathworks.language-matlab",
+    "ms-python.python",
+    "ms-python.debugpy",
+    "ms-python.vscode-pylance",
+    "mechatroner.rainbow-csv",
+    "ms-python.black-formatter"
+  ]
+}

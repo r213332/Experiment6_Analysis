@@ -1,0 +1,10 @@
+*.mp3
+
+/data/subject*
+/processedData/subject*
+/graphs
+/__pycache__
+
+.DS_Store
+
+*.pyc

@@ -1,0 +1,164 @@
+{
+  "control": [
+    {
+      "looking_object": "No-Stimulus-Area",
+      "count": 3086
+    },
+    {
+      "looking_object": "Object010",
+      "count": 2508
+    },
+    {
+      "looking_object": "Concrete Barrier CS",
+      "count": 963
+    },
+    {
+      "looking_object": "Default Road 003",
+      "count": 649
+    },
+    {
+      "looking_object": "Default Road 004",
+      "count": 416
+    },
+    {
+      "looking_object": "Default Road 001",
+      "count": 396
+    },
+    {
+      "looking_object": "Radar",
+      "count": 240
+    },
+    {
+      "looking_object": "Meter",
+      "count": 232
+    },
+    {
+      "looking_object": "Race Track 002",
+      "count": 220
+    },
+    {
+      "looking_object": "Concrete Barrier Simple Right",
+      "count": 187
+    },
+    {
+      "looking_object": "Terrain",
+      "count": 152
+    },
+    {
+      "looking_object": "Default Road 002",
+      "count": 72
+    },
+    {
+      "looking_object": "Race Track 003",
+      "count": 67
+    },
+    {
+      "looking_object": "mirror_right_001",
+      "count": 50
+    },
+    {
+      "looking_object": "tunnel4",
+      "count": 10
+    },
+    {
+      "looking_object": "tunnel3",
+      "count": 1
+    }
+  ],
+  "near": [
+    {
+      "looking_object": "Object010",
+      "count": 4521
+    },
+    {
+      "looking_object": "No-Stimulus-Area",
+      "count": 1081
+    },
+    {
+      "looking_object": "Default Road 002",
+      "count": 969
+    },
+    {
+      "looking_object": "Concrete Barrier CS",
+      "count": 707
+    },
+    {
+      "looking_object": "Race Track 004",
+      "count": 286
+    },
+    {
+      "looking_object": "Default Road 001",
+      "count": 201
+    },
+    {
+      "looking_object": "Default Road 003",
+      "count": 161
+    },
+    {
+      "looking_object": "Radar",
+      "count": 154
+    },
+    {
+      "looking_object": "mirror_right_001",
+      "count": 90
+    },
+    {
+      "looking_object": "Terrain",
+      "count": 80
+    },
+    {
+      "looking_object": "Meter",
+      "count": 74
+    },
+    {
+      "looking_object": "Fence Wooden Procedural",
+      "count": 6
+    },
+    {
+      "looking_object": "Concrete Barrier Simple Right",
+      "count": 5
+    },
+    {
+      "looking_object": "tunnel3",
+      "count": 1
+    }
+  ],
+  "far": [
+    {
+      "looking_object": "Object010",
+      "count": 1664
+    },
+    {
+      "looking_object": "No-Stimulus-Area",
+      "count": 1332
+    },
+    {
+      "looking_object": "Default Road 003",
+      "count": 1008
+    },
+    {
+      "looking_object": "Concrete Barrier CS",
+      "count": 647
+    },
+    {
+      "looking_object": "Race Track 001",
+      "count": 313
+    },
+    {
+      "looking_object": "Meter",
+      "count": 141
+    },
+    {
+      "looking_object": "Radar",
+      "count": 95
+    },
+    {
+      "looking_object": "Terrain",
+      "count": 28
+    },
+    {
+      "looking_object": "Concrete Barrier Simple Right",
+      "count": 1
+    }
+  ]
+}
