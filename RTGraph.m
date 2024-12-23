@@ -8,12 +8,9 @@ subdirs = subdirs(~ismember({subdirs.name}, {'.', '..'}));  % '.'と'..'を除�
 % RTクラスの配列を宣言
 subjects = RT.empty(0, 0);
 all = RT.empty(1, 0);
-high = RT.empty(1, 0);
-highAll = RT.empty(1, 0);
-medium = RT.empty(1, 0);
-mediumAll = RT.empty(1, 0);
-low = RT.empty(1, 0);
-lowAll = RT.empty(1, 0);
+
+% 年齢
+age = [];
 
 % 各サブディレクトリに対してRTクラスのインスタンスを作成
 for i = 1:length(subdirs)
@@ -32,44 +29,17 @@ for i = 1:length(subdirs)
     metaContent = fileread(metaFilePath);
     meta = jsondecode(metaContent);
     disp(meta.name);
+    age = [age, str2double(meta.age)];
     
     % RTクラスのインスタンスを作成
     % subjects(i) = RT(subdirName,control, near, far);
-    subject = RT(meta.view,meta.driving_frequency,control, near, far);
+    subject = RT(meta.view,control, near, far);
     subjects = [subjects, subject];
-    if(meta.driving_frequency == "high")
-        high = [high, subject];
-    elseif(meta.driving_frequency == "medium")
-        medium = [medium, subject];
-    elseif(meta.driving_frequency == "low")
-        low = [low, subject];
-    end
 
     if isempty(all)
-        all = RT('All','All',control, near, far);
+        all = RT('All',control, near, far);
     else
         all = all.addData(control, near, far);
-    end
-    if(meta.driving_frequency == "high")
-        if isempty(highAll)
-            highAll = RT('HighAll','High',control, near, far);
-        else
-            highAll = highAll.addData(control, near, far);
-        end
-    end
-    if(meta.driving_frequency == "medium")
-        if isempty(mediumAll)
-            mediumAll = RT('MediumAll','Medium',control, near, far);
-        else
-            mediumAll = mediumAll.addData(control, near, far);
-        end
-    end
-    if(meta.driving_frequency == "low")
-        if isempty(lowAll)
-            lowAll = RT('LowAll','Low',control, near, far);
-        else
-            lowAll = lowAll.addData(control, near, far);
-        end
     end
 
 end
@@ -77,27 +47,19 @@ end
 subjects = sortData(subjects);
 % subjects = [subjects, all];
 
-high = sortData(high);
-high = [high, highAll];
-
-medium = sortData(medium);
-medium = [medium, mediumAll];
-
-low = sortData(low);
-low = [low, lowAll];
-
-DFALL = [all,highAll, mediumAll, lowAll];
+age_avg = mean(age);
+age_std = std(age);
+disp("年齢");
+disp("平均");
+disp(age_avg);
+disp("標準偏差");
+disp(age_std);
 
 % 各データを検定結果付きで表示
-showData(subjects, 'PDT_RT_name_Graph.png');
+showData(subjects, 'PDT_RT_Graph.png');
 
-% allのデータを表示
+% 一つのデータを検定結果付きで表示
 showOneData(all, 'PDT_RT_All_Graph.png');
-
-% showData(high, 'PDT_RT_High_Graph.png');
-% showData(medium, 'PDT_RT_Medium_Graph.png');
-% showData(low, 'PDT_RT_Low_Graph.png');
-% showData(DFALL, 'PDT_RT_DFALL_Graph.png');
 
 % for i = 1:length(subjects)
 %     subject = subjects(i);
@@ -133,32 +95,29 @@ disp("MissRateのシャピロウィルク検定");
 disp(C_P);
 disp(N_P);
 disp(F_P);
-% クラスカルワリス検定
+% % クラスカルワリス検定
 % figure;
 % [subject_p,subject_tbl,subject_stats] = kruskalwallis(MissingRate, [], 'off');
 % disp("MissRateのクラスカルワリス検定");
 % disp(subject_p);
-% result = multcompare(subject_stats);
+% % result = multcompare(subject_stats);
 % medianMissRate = median(MissingRate);
 % bar(medianMissRate);
 
 % ANOVA
 figure;
 p = anova1(MissingRate);
-disp("MissRateのANOVA");
-disp(p);
 meanMissRate = mean(MissingRate);
 stdMissRate = std(MissingRate);
-b = bar(meanMissRate);
+bar(meanMissRate);
 hold on;
-errorbar(meanMissRate, stdMissRate, 'k', 'linestyle', 'none','LineWidth', 2);
-
-% line([b.XEndPoints(1); b.XEndPoints(3)], [b.YEndPoints(1) + 0.4;b.YEndPoints(1) + 0.4], 'Color', 'k','LineWidth', 2);
-% text(b.XEndPoints(2), b.YEndPoints(1) + 0.4, strcat('p=',string(p)), 'HorizontalAlignment','center','VerticalAlignment','bottom');
+errorbar(meanMissRate, stdMissRate, 'k', 'linestyle', 'none','LineWidth',2);
+disp("MissRateのANOVA");
+disp(p);
 
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
 fontsize(gcf,36,'points')
-ylim([0, 0.55]);
+ylim([0, 0.35]);
 ylabel("見逃し率の平均");
 xticklabels(["対照条件", "近接条件", "遠方条件"]);
 title('PDTの見逃し率の平均');
@@ -214,11 +173,11 @@ function showOneData(subject,fileName)
     x = b.XEndPoints;
     xStart = [x(1), x(1), x(2)];
     xEnd = [x(2), x(3), x(3)];
-    ytips = max(y) + 0.08;
+    ytips = max(y) + 0.05;
     yStep = 0.04;
-    C_N_label = 'n.s.';
-    C_F_label = 'n.s.';
-    N_F_label = 'n.s.';
+    C_N_label = '';
+    C_F_label = '';
+    N_F_label = '';
 
     p = subject.kruskalwallis();
     disp(subject.name);
@@ -259,7 +218,7 @@ function showOneData(subject,fileName)
     % disp([xStart; xEnd]);
     % disp([ytips+yStep,ytips+3*yStep,ytips+2*yStep;ytips+yStep,ytips+3*yStep,ytips+2*yStep]);
 
-    line([xStart; xEnd], [ytips+yStep,ytips+3*yStep,ytips+2*yStep;ytips+yStep,ytips+3*yStep,ytips+2*yStep], 'Color', 'k','LineWidth', 2);
+    line([xStart; xEnd], [ytips+yStep,ytips+3*yStep,ytips+2*yStep;ytips+yStep,ytips+3*yStep,ytips+2*yStep], 'Color', 'k','LineWidth',2.0);
     text((xEnd + xStart)./2, [ytips+yStep,ytips+3*yStep,ytips+2*yStep], labels, 'HorizontalAlignment','center','VerticalAlignment','bottom');
 
 
@@ -271,14 +230,14 @@ function showOneData(subject,fileName)
     for i = 1:nbars
         x(i,:) = b(i).XEndPoints;
     end
-    errorbar(x.',Median, errorMin,errorMax, 'k', 'linestyle', 'none','LineWidth', 2);
+    errorbar(x.',Median, errorMin,errorMax, 'k', 'linestyle', 'none','LineWidth',2.0);
 
     % グラフの装飾
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
-    fontsize(gcf,36,'points')
+    fontsize(gcf,24,'points')
     title("PDTへの反応時間（中央値）");
     ylabel("反応時間[s]");
-    ylim([0, 0.75]);
+    ylim([0, 0.65]);
     legend("反応時間の中央値",'四分位範囲','',''); 
     xticklabels(["対照条件", "近接条件", "遠方条件"]);
 
@@ -336,6 +295,8 @@ function showData(subjects,fileName)
     for i = 1:length(subjects)
         subject = subjects(i);
         p = subject.kruskalwallis();
+        disp(subject.name);
+        disp(p); 
         if(p < 0.05)
             [C_N_P,C_F_P,N_F_P] = subject.ranksum();
             label = "n.s.";
@@ -351,7 +312,7 @@ function showData(subjects,fileName)
             labels(i) = "";
         end
     end
-    line([xStart; xEnd], [ytips+yStep; ytips+yStep], 'Color', 'k','LineWidth', 2);
+    line([xStart; xEnd], [ytips+yStep; ytips+yStep], 'Color', 'k','LineWidth',2.0);
     text((xStart + xEnd)./2, ytips+yStep, labels, 'HorizontalAlignment','center','VerticalAlignment','bottom');
 
     % 対照条件と遠方条件
@@ -377,7 +338,7 @@ function showData(subjects,fileName)
             labels(i) = "";
         end
     end
-    line([xStart; xEnd], [ytips+yStep; ytips+yStep], 'Color', 'k','LineWidth', 2);
+    line([xStart; xEnd], [ytips+yStep; ytips+yStep], 'Color', 'k','LineWidth',2.0);
     text((xStart + xEnd)./2, ytips+yStep, labels, 'HorizontalAlignment','center','VerticalAlignment','bottom');
 
     % 近接条件と遠方条件
@@ -403,7 +364,7 @@ function showData(subjects,fileName)
             labels(i) = "";
         end
     end
-    line([xStart; xEnd], [ytips+yStep; ytips+yStep], 'Color', 'k','LineWidth', 2);
+    line([xStart; xEnd], [ytips+yStep; ytips+yStep], 'Color', 'k','LineWidth',2.0);
     text((xStart + xEnd)./2, ytips+yStep, labels, 'HorizontalAlignment','center','VerticalAlignment','bottom');
 
 
@@ -414,11 +375,11 @@ function showData(subjects,fileName)
     for i = 1:nbars
         x(i,:) = b(i).XEndPoints;
     end
-    errorbar(x.',Median, errorMin,errorMax, 'k', 'linestyle', 'none','LineWidth', 2);
+    errorbar(x.',Median, errorMin,errorMax, 'k', 'linestyle', 'none','LineWidth',2.0);
 
     % グラフの装飾
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
-    fontsize(gcf,36,'points')
+    fontsize(gcf,24,'points')
     title("PDTへの反応時間（中央値）");
     ylabel("反応時間[s]");
     ylim([0, 1.5]);

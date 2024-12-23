@@ -2,7 +2,6 @@
 classdef RT
     properties
         name
-        drivingFrequency
         control
         near
         far
@@ -14,11 +13,10 @@ classdef RT
     
     methods
         % コンストラクタ
-        function obj = RT(name,drivingFrequency,control, near, far)
+        function obj = RT(name,control, near, far)
             % 引数のバリデーション
-            if nargin == 5
+            if nargin == 4
                 obj.name = name;
-                obj.drivingFrequency = drivingFrequency;
                 % 刺激の見逃し率計算
                 obj.controlMiss = (height(control) - length(rmmissing(control{:, 1})));
                 obj.nearMiss = (height(near) - length(rmmissing(near{:, 1})));
@@ -101,7 +99,8 @@ classdef RT
             % パディングされた配列を連結
             concatenated_array = [padded_control, padded_near, padded_far];
             % クラスカルウォリス検定
-            [subject_p,subject_tbl,subject_stats] = kruskalwallis(concatenated_array, [], 'off');
+            [subject_p,subject_tbl,subject_stats] = kruskalwallis(concatenated_array, {'controlo','near','far'}, 'off');
+            disp(subject_stats);
         end
 
         % シャピロウィルク検定
@@ -114,9 +113,18 @@ classdef RT
 
         % 多重比較 ウィルコクソンの順位和検定
         function [C_N_P,C_F_P,N_F_P] = ranksum(obj)
-            [C_N_P,C_N_H] = ranksum(obj.control, obj.near, 'alpha', 0.05);
-            [C_F_P,C_F_H] = ranksum(obj.control, obj.far, 'alpha', 0.05);
-            [N_F_P,N_F_H] = ranksum(obj.near, obj.far, 'alpha', 0.05);
+            disp("多重比較--------------");
+            disp(obj.name);
+            [C_N_P,~,C_N_ST] = ranksum(obj.control, obj.near, 'alpha', 0.05);
+            disp("対照条件と近条件の統計量");
+            disp(C_N_ST);
+            [C_F_P,~,C_F_ST] = ranksum(obj.control, obj.far, 'alpha', 0.05);
+            disp("対照条件と遠条件の統計量");
+            disp(C_F_ST);
+            [N_F_P,~,N_F_ST] = ranksum(obj.near, obj.far, 'alpha', 0.05);
+            disp("近条件と遠条件の統計量");
+            disp(N_F_ST);
+            disp("---------------------");
         end
     end
 end

@@ -44,30 +44,32 @@ def RT(subject: str):
     if not os.path.exists("./processedData/" + subject):
         os.makedirs("./processedData/" + subject)
 
-    shutil.copy("./data/" + subject + "/meta.json","./processedData/" + subject + "/meta.json")
+    shutil.copy(
+        "./data/" + subject + "/meta.json", "./processedData/" + subject + "/meta.json"
+    )
 
     pd.DataFrame(
         {
             "RT": [x["RT"] for x in control],
-            "MeanVelocity": [x["MeanVelocity"] for x in control],
             "HDegree": [x["HDegree"] for x in control],
             "VDegree": [x["VDegree"] for x in control],
+            "GazeValid": [x["GazeValid"] for x in control],
         }
     ).to_csv("./processedData/" + subject + "/controlRT.csv", index=False)
     pd.DataFrame(
         {
             "RT": [x["RT"] for x in near],
-            "MeanVelocity": [x["MeanVelocity"] for x in near],
             "HDegree": [x["HDegree"] for x in near],
             "VDegree": [x["VDegree"] for x in near],
+            "GazeValid": [x["GazeValid"] for x in near],
         }
     ).to_csv("./processedData/" + subject + "/nearRT.csv", index=False)
     pd.DataFrame(
         {
             "RT": [x["RT"] for x in far],
-            "MeanVelocity": [x["MeanVelocity"] for x in far],
             "HDegree": [x["HDegree"] for x in far],
             "VDegree": [x["VDegree"] for x in far],
+            "GazeValid": [x["GazeValid"] for x in far],
         }
     ).to_csv("./processedData/" + subject + "/farRT.csv", index=False)
 
@@ -211,18 +213,23 @@ def RT(subject: str):
     # plt.show()
 
 
-# 1被験者のデータを処理
-# subject = "subjectL"
-# RT(subject)
+def main():
+    # # 1被験者のデータを処理
+    # subject = "subject13"
+    # RT(subject)
 
-# 全員のデータを処理
-search_path = os.path.join(".", "data", "*subject*")
-directories = glob.glob(search_path)
+    # 全員のデータを処理
+    search_path = os.path.join(".", "data", "*subject*")
+    directories = glob.glob(search_path)
 
-# ディレクトリ名のリストを取得
-directory_names = [os.path.basename(directory) for directory in directories]
+    # ディレクトリ名のリストを取得
+    directory_names = [os.path.basename(directory) for directory in directories]
 
-# print(directory_names)
-for subject in directory_names:
-    RT(subject)
-    print("finish ", subject)
+    # print(directory_names)
+    for subject in directory_names:
+        RT(subject)
+        print("finish ", subject)
+
+
+if __name__ == "__main__":
+    main()
