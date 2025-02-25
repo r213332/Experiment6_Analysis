@@ -95,13 +95,12 @@ xLimit = [2.5,56];
 yLimit = [0.2,1.5];
 
 figure
-nexttile
-plot(verifiedControlTable.HDegree,verifiedControlTable.RT,'o');
+plot(verifiedControlTable.HDegree,verifiedControlTable.RT,'o','MarkerSize', 10);
 xlim(xLimit);
 ylim(yLimit);
 xlabel('偏心度(水平)[°]');
 ylabel('反応時間[s]');
-title('対照');
+title('対照条件');
 lsline;
 mdl = fitlm(verifiedControlTable,'RT~HDegree');  % Create a linear regression model
 a_control = mdl.Coefficients.Estimate(2);  % Get the intercept
@@ -109,13 +108,17 @@ R2_control = mdl.Rsquared.Ordinary;  % Get the R-squared value
 text(labelPos_x, labelPos_y + 0.1, ['a = ', num2str(a_control)]);
 text(labelPos_x, labelPos_y, ['R^2 = ', num2str(R2_control)]);
 
-nexttile
-plot(verifiedNearTable.HDegree,verifiedNearTable.RT,'o');
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
+fontsize(gcf,36,'points')
+saveas(gcf, fullfile('./graphs', 'PDTRT_Degree_C_Graph.png'));
+
+figure;
+plot(verifiedNearTable.HDegree,verifiedNearTable.RT,'o','MarkerSize', 10);
 xlim(xLimit);
 ylim(yLimit);
 xlabel('偏心度(水平)[°]');
 ylabel('反応時間[s]');
-title('近傍');
+title('近接条件');
 lsline;
 mdl = fitlm(verifiedNearTable,'RT~HDegree');  % Create a linear regression model
 a_near = mdl.Coefficients.Estimate(2);  % Get the intercept
@@ -123,69 +126,80 @@ R2_near = mdl.Rsquared.Ordinary;  % Get the R-squared value
 text(labelPos_x, labelPos_y + 0.1, ['a = ', num2str(a_near)]);
 text(labelPos_x, labelPos_y, ['R^2 = ', num2str(R2_near)]);
 
-nexttile
-plot(verifiedFarTable.HDegree,verifiedFarTable.RT,'o');
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
+fontsize(gcf,36,'points')
+saveas(gcf, fullfile('./graphs', 'PDTRT_Degree_N_Graph.png'));
+
+figure;
+plot(verifiedFarTable.HDegree,verifiedFarTable.RT,'o','MarkerSize', 10);
 xlim(xLimit);
 ylim(yLimit);
 xlabel('偏心度(水平)[°]');
 ylabel('反応時間[s]');
 lsline;
-title('遠方');
+title('遠方条件');
 mdl = fitlm(verifiedFarTable,'RT~HDegree');  % Create a linear regression model
 a_far = mdl.Coefficients.Estimate(2);  % Get the intercept
 R2_far = mdl.Rsquared.Ordinary;  % Get the R-squared value
 text(labelPos_x, labelPos_y + 0.1, ['a = ', num2str(a_far)]);
 text(labelPos_x, labelPos_y, ['R^2 = ', num2str(R2_far)]);
 
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 2, 1]);
-fontsize(gcf,24,'points')
-saveas(gcf, fullfile('./graphs', 'PDTRT_Degree_Graph.png'));
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
+fontsize(gcf,36,'points')
+saveas(gcf, fullfile('./graphs', 'PDTRT_Degree_F_Graph.png'));
 
 figure;
 StimulusHDegree = 5.5:2.5:53.0;
-nexttile
 % missingControlRTRows.HDegreeの要素をStimulusDegreeに基づいて集計
 [~, ~, controlBin] = histcounts(missingControlRTRows.HDegree, [StimulusHDegree, Inf]);
 controlCounts = accumarray(controlBin(controlBin > 0), 1, [length(StimulusHDegree), 1]);
 % 見逃し数から見逃し率を計算
 [~,~,controlIdx] = unique(controlTable.HDegree);
 controlMissRate = controlCounts ./ accumarray(controlIdx, 1);
-bar(StimulusHDegree, controlMissRate);
+bar(StimulusHDegree, controlMissRate .* 100);
 xlim([0,60]);
-ylim([0,1.1]);
+ylim([0,110]);
 xlabel('偏心度(水平)[°]');
-ylabel('見逃し数[個]');
-title('対照');
+ylabel('見逃し率[%]');
+title('対照条件');
 
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
+fontsize(gcf,36,'points')
+saveas(gcf, fullfile('./graphs', 'PDTMissing_Degree_C_Graph.png'));
 
-nexttile
+figure;
 [~,~,nearBin] = histcounts(missingNearRTRows.HDegree, [StimulusHDegree, Inf]);
 nearCounts = accumarray(nearBin(nearBin > 0), 1, [length(StimulusHDegree), 1]);
 % 見逃し数から見逃し率を計算
 [~,~,nearIdx] = unique(nearTable.HDegree);
 nearMissRate = nearCounts ./ accumarray(nearIdx, 1);
-bar(StimulusHDegree, nearMissRate);
+bar(StimulusHDegree, nearMissRate .* 100);
 xlim([0,60]);
-ylim([0,1.1]);
+ylim([0,110]);
 xlabel('偏心度(水平)[°]');
-ylabel('見逃し数[個]');
-title('近傍');
+ylabel('見逃し率[%]');
+title('近接条件');
 
-nexttile
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
+fontsize(gcf,36,'points')
+saveas(gcf, fullfile('./graphs', 'PDTMissing_Degree_N_Graph.png'));
+
+figure;
 [~,~,farBin] = histcounts(missingFarRTRows.HDegree, [StimulusHDegree, Inf]);
 farCounts = accumarray(farBin(farBin > 0), 1, [length(StimulusHDegree), 1]);
 % 見逃し数から見逃し率を計算
 [~,~,farIdx] = unique(farTable.HDegree);
 farMissRate = farCounts ./ accumarray(farIdx, 1);
-bar(StimulusHDegree, farMissRate);
+bar(StimulusHDegree, farMissRate .* 100);
 xlim([0,60]);
-ylim([0,1.1]);
+ylim([0,110]);
 xlabel('偏心度(水平)[°]');
-ylabel('見逃し数[個]');
-title('遠方');
+ylabel('見逃し率[%]');
+title('遠方条件');
 
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 2, 1]);
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
 fontsize(gcf,36,'points')
-saveas(gcf, fullfile('./graphs', 'PDTMissing_Degree_Graph.png'));
+saveas(gcf, fullfile('./graphs', 'PDTMissing_Degree_F_Graph.png'));
+
 
 

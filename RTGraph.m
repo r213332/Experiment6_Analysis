@@ -56,10 +56,10 @@ disp("標準偏差");
 disp(age_std);
 
 % 各データを検定結果付きで表示
-showData(subjects, 'PDT_RT_Graph.png');
+% showData(subjects, 'PDT_RT_Graph.png');
 
 % 一つのデータを検定結果付きで表示
-showOneData(all, 'PDT_RT_All_Graph.png');
+showOneData(all, 'PDT_RT_All_Graph_Num.png');
 
 % for i = 1:length(subjects)
 %     subject = subjects(i);
@@ -79,22 +79,22 @@ showOneData(all, 'PDT_RT_All_Graph.png');
 % disp(N_F_P);
 
 % MissRateの検定&描画
-MissingRate = zeros(length(subjects), 3);
-for i = 1:length(subjects)
-    subject = subjects(i);
+% MissingRate = zeros(length(subjects), 3);
+% for i = 1:length(subjects)
+%     subject = subjects(i);
 
-    [controlMissRate, nearMissRate, farMissRate] = subject.getMissingRate();
-    MissingRate(i,1) = controlMissRate;
-    MissingRate(i,2) = nearMissRate;
-    MissingRate(i,3) = farMissRate;
-end
-[s1_c_h,C_P] = swtest(MissingRate(:,1));
-[s1_n_h,N_P] = swtest(MissingRate(:,2));
-[s1_f_h,F_P] = swtest(MissingRate(:,3));
-disp("MissRateのシャピロウィルク検定");
-disp(C_P);
-disp(N_P);
-disp(F_P);
+%     [controlMissRate, nearMissRate, farMissRate] = subject.getMissingRate();
+%     MissingRate(i,1) = controlMissRate;
+%     MissingRate(i,2) = nearMissRate;
+%     MissingRate(i,3) = farMissRate;
+% end
+% [s1_c_h,C_P] = swtest(MissingRate(:,1));
+% [s1_n_h,N_P] = swtest(MissingRate(:,2));
+% [s1_f_h,F_P] = swtest(MissingRate(:,3));
+% disp("MissRateのシャピロウィルク検定");
+% disp(C_P);
+% disp(N_P);
+% disp(F_P);
 % % クラスカルワリス検定
 % figure;
 % [subject_p,subject_tbl,subject_stats] = kruskalwallis(MissingRate, [], 'off');
@@ -105,24 +105,24 @@ disp(F_P);
 % bar(medianMissRate);
 
 % ANOVA
-figure;
-p = anova1(MissingRate);
-meanMissRate = mean(MissingRate);
-stdMissRate = std(MissingRate);
-bar(meanMissRate);
-hold on;
-errorbar(meanMissRate, stdMissRate, 'k', 'linestyle', 'none','LineWidth',2);
-disp("MissRateのANOVA");
-disp(p);
+% figure;
+% p = anova1(MissingRate);
+% meanMissRate = mean(MissingRate);
+% stdMissRate = std(MissingRate);
+% bar(meanMissRate);
+% hold on;
+% errorbar(meanMissRate, stdMissRate, 'k', 'linestyle', 'none','LineWidth',2);
+% disp("MissRateのANOVA");
+% disp(p);
 
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
-fontsize(gcf,36,'points')
-ylim([0, 0.35]);
-ylabel("見逃し率の平均");
-xticklabels(["対照条件", "近接条件", "遠方条件"]);
-title('PDTの見逃し率の平均');
+% set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
+% fontsize(gcf,36,'points')
+% ylim([0, 0.35]);
+% ylabel("見逃し率の平均");
+% xticklabels(["対照条件", "近接条件", "遠方条件"]);
+% title('PDTの見逃し率の平均');
 
-saveas(gcf, fullfile('./graphs', 'PDT_RT_Miss_Graph.png'));
+% saveas(gcf, fullfile('./graphs', 'PDT_RT_Miss_Graph.png'));
 
 function sortedData = sortData(data)
     % subjects配列からnameプロパティの値を抽出
@@ -173,11 +173,11 @@ function showOneData(subject,fileName)
     x = b.XEndPoints;
     xStart = [x(1), x(1), x(2)];
     xEnd = [x(2), x(3), x(3)];
-    ytips = max(y) + 0.05;
-    yStep = 0.04;
-    C_N_label = '';
-    C_F_label = '';
-    N_F_label = '';
+    ytips = max(y) + 0.1;
+    yStep = 0.05;
+    C_N_label = 'n.s.';
+    C_F_label = 'n.s.';
+    N_F_label = 'n.s.';
 
     p = subject.kruskalwallis();
     disp(subject.name);
@@ -205,9 +205,9 @@ function showOneData(subject,fileName)
             N_F_label = "**";
         end
 
-        C_N_label = strcat(strcat(C_N_label,' p='), string(C_N_P));
-        C_F_label = strcat(strcat(C_F_label,' p='), string(C_F_P));
-        N_F_label = strcat(strcat(N_F_label,' p='), string(N_F_P));
+        C_N_label = strcat(strcat(C_N_label,' p='), sprintf('%.2e',C_N_P));
+        C_F_label = strcat(strcat(C_F_label,' p='), sprintf('%.2e',C_F_P));
+        N_F_label = strcat(strcat(N_F_label,' p='), sprintf('%.2e',N_F_P));
 
     else
         xStart = xEnd;
@@ -234,10 +234,10 @@ function showOneData(subject,fileName)
 
     % グラフの装飾
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 1]);
-    fontsize(gcf,24,'points')
-    title("PDTへの反応時間（中央値）");
+    fontsize(gcf,36,'points')
+    title("実験4 運転動作実験");
     ylabel("反応時間[s]");
-    ylim([0, 0.65]);
+    ylim([0, 0.85]);
     legend("反応時間の中央値",'四分位範囲','',''); 
     xticklabels(["対照条件", "近接条件", "遠方条件"]);
 

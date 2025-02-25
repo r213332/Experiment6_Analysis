@@ -2,6 +2,7 @@
 
 /data/subject*
 /data/pre
+/data/pre_pre
 !/data/testData
 /processedData/subject*
 !/processedData/testData
