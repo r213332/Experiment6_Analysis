@@ -5,6 +5,11 @@
 
 ## 共通
 
+```
+# 依存関係のインストール
+pip install -r .\requirements.txt
+```
+
 ### function.py
 
   - 各前処理プログラム(.py)で使用する関数群です。
